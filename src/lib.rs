@@ -1,7 +1,10 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+mod scalar;
+pub use scalar::ScalarInner;
+
+mod point;
+pub use point::PointInner;
+
+#[derive(Debug)]
+pub enum EccError {
+    ParseError,
 }

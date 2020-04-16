@@ -1,6 +1,5 @@
 extern crate dislog_hal_sm2;
 
-use cryptape_sm;
 use dislog_hal::{Bytes, DisLogPoint, Point, Scalar};
 use dislog_hal_sm2::{PointInner, ScalarInner};
 

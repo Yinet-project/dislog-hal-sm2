@@ -1,7 +1,7 @@
 extern crate dislog_hal_sm2;
 
 use dislog_hal::{Bytes, DisLogPoint, Point, Scalar};
-use dislog_hal_sm2::{PointInner, ScalarInner};
+use dislog_hal_sm2::{NewU833, PointInner, ScalarInner};
 
 fn get_sim_sm2(a: u8) -> Scalar<ScalarInner> {
     let mut array = [0u8; 32];
@@ -75,18 +75,18 @@ fn test_point() {
     let point_innerone = PointInner::one();
     let point_innerzero = PointInner::zero();
 
-    let point_innera = PointInner::from_bytes(vec![
+    let point_innera = PointInner::from_bytes(NewU833([
         2, 50, 196, 174, 44, 31, 25, 129, 25, 95, 153, 4, 70, 106, 57, 201, 148, 143, 227, 11, 191,
         242, 102, 11, 225, 113, 90, 69, 137, 51, 76, 116, 199,
-    ])
+    ]))
     .unwrap();
     assert_eq!(point_innera, point_innerone);
 
     assert_eq!(
-        PointInner::from_bytes(vec![
+        PointInner::from_bytes(NewU833([
             1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0,
-        ])
+        ]))
         .unwrap(),
         point_innerzero
     );
@@ -137,10 +137,10 @@ fn test_point() {
 
     assert_eq!(
         Point {
-            inner: PointInner::from_bytes(vec![
+            inner: PointInner::from_bytes(NewU833([
                 2, 169, 127, 124, 212, 179, 201, 147, 180, 190, 45, 170, 140, 219, 65, 226, 76,
                 161, 63, 107, 217, 69, 48, 34, 68, 226, 105, 24, 241, 208, 80, 158, 191
-            ])
+            ]))
             .unwrap(),
         },
         point_one.clone() * get_sim_sm2(3)
@@ -160,10 +160,10 @@ fn test_point() {
 
     assert_eq!(
         Point {
-            inner: PointInner::from_bytes(vec![
+            inner: PointInner::from_bytes(NewU833([
                 2, 169, 127, 124, 212, 179, 201, 147, 180, 190, 45, 170, 140, 219, 65, 226, 76,
                 161, 63, 107, 217, 69, 48, 34, 68, 226, 105, 24, 241, 208, 80, 158, 191
-            ])
+            ]))
             .unwrap(),
         },
         get_sim_sm2(3) * point_one.clone()

@@ -1,4 +1,4 @@
-use crate::{EccError, ScalarInner};
+use crate::{EccError, NewU833, ScalarInner};
 use core::fmt::Debug;
 use cryptape_sm;
 use dislog_hal::Bytes;
@@ -12,10 +12,10 @@ pub struct PointInner {
 
 lazy_static! {
     static ref ECC_CTX: cryptape_sm::sm2::ecc::EccCtx = cryptape_sm::sm2::ecc::EccCtx::new();
-    static ref ECC_ZERO_DESC: Vec<u8> = vec![
+    static ref ECC_ZERO_DESC: NewU833 = NewU833([
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0,
-    ];
+    ]);
 }
 
 impl PointInner {
@@ -31,13 +31,13 @@ impl Debug for PointInner {
 }
 
 impl Bytes for PointInner {
-    type BytesType = Vec<u8>;
+    type BytesType = NewU833;
     type Error = EccError;
     fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
         if *ECC_ZERO_DESC == bytes {
             return Ok(Self::zero());
         }
-        match ECC_CTX.bytes_to_point(&bytes) {
+        match ECC_CTX.bytes_to_point(&bytes.0) {
             Ok(x) => Ok(Self { data: x }),
             Err(_) => Err(EccError::ParseError),
         }
@@ -47,7 +47,9 @@ impl Bytes for PointInner {
         if self == &Self::zero() {
             return ECC_ZERO_DESC.clone();
         }
-        ECC_CTX.point_to_bytes(&self.data, true)
+        let mut ret = [0u8; 33];
+        ret.clone_from_slice(&ECC_CTX.point_to_bytes(&self.data, true)[0..33]);
+        NewU833(ret)
     }
 }
 

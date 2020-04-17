@@ -1,6 +1,5 @@
 use crate::{EccError, NewU833, ScalarInner};
 use core::fmt::Debug;
-use cryptape_sm;
 use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
 use lazy_static::*;
@@ -99,7 +98,7 @@ impl DisLogPoint for PointInner {
     }
 
     fn add(&self, rhs: &Self) -> Self {
-        let ret = if ECC_CTX.eq(&self.data, &rhs.data) {
+        if ECC_CTX.eq(&self.data, &rhs.data) {
             Self {
                 data: ECC_CTX.double(&ECC_CTX.generator()),
             }
@@ -107,9 +106,7 @@ impl DisLogPoint for PointInner {
             Self {
                 data: ECC_CTX.add(&self.data, &rhs.data),
             }
-        };
-
-        ret
+        }
     }
 
     fn mul(&self, rhs: &Self::Scalar) -> Self {

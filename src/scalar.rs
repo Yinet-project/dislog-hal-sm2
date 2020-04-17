@@ -30,9 +30,7 @@ impl Bytes for ScalarInner {
     fn to_bytes(&self) -> Self::BytesType {
         let mut ret = [0u8; 32];
         let output = self.data.to_bytes_le();
-        for i in 0..output.len() {
-            ret[i] = output[i];
-        }
+        ret[..output.len()].clone_from_slice(&output[..]);
         ret
     }
 }

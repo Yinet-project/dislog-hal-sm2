@@ -47,10 +47,6 @@ impl PartialEq for ScalarInner {
     fn eq(&self, other: &Self) -> bool {
         self.data.eq(&other.data)
     }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.data.eq(&other.data)
-    }
 }
 
 impl Debug for ScalarInner {

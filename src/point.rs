@@ -61,10 +61,6 @@ impl Clone for PointInner {
 }
 
 impl PartialEq for PointInner {
-    fn ne(&self, other: &Self) -> bool {
-        !ECC_CTX.eq(&self.data, &other.data)
-    }
-
     fn eq(&self, other: &Self) -> bool {
         ECC_CTX.eq(&self.data, &other.data)
     }

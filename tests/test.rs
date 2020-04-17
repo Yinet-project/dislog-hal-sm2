@@ -2,6 +2,7 @@ extern crate dislog_hal_sm2;
 
 use dislog_hal::{Bytes, DisLogPoint, Point, Scalar};
 use dislog_hal_sm2::{NewU833, PointInner, ScalarInner};
+use hex::{FromHex, ToHex};
 
 fn get_sim_sm2(a: u8) -> Scalar<ScalarInner> {
     let mut array = [0u8; 32];
@@ -198,4 +199,16 @@ fn test_point() {
         scalar_ax.clone() * get_sim_sm2(5) * get_sim_sm2(3),
         scalar_ax.clone() * get_sim_sm2(15)
     );
+
+    let hex_str = &point_one.inner.to_bytes().encode_hex::<String>();
+    assert_eq!(
+        String::from("0232c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7"),
+        *hex_str
+    );
+
+    let point_hex = Point {
+        inner: PointInner::from_bytes(NewU833::from_hex(hex_str).unwrap()).unwrap(),
+    };
+
+    assert_eq!(&point_one, &point_hex);
 }

@@ -38,10 +38,6 @@ impl Debug for NewU833 {
 }
 
 impl PartialEq for NewU833 {
-    fn ne(&self, other: &Self) -> bool {
-        self.0[..] != other.0[..]
-    }
-
     fn eq(&self, other: &Self) -> bool {
         self.0[..] == other.0[..]
     }
@@ -49,7 +45,7 @@ impl PartialEq for NewU833 {
 
 impl Clone for NewU833 {
     fn clone(&self) -> Self {
-        Self(self.0.clone())
+        Self(self.0)
     }
 }
 

@@ -25,7 +25,7 @@ impl PointInner {
 
 impl Debug for PointInner {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        write!(f, "Scalar{{\n\tbytes: {:?},\n}}", &self.to_bytes())
+        write!(f, "Point{{\n\tbytes: {:?},\n}}", &self.to_bytes())
     }
 }
 

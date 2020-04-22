@@ -52,9 +52,3 @@ impl Clone for NewU833 {
         Self(self.0)
     }
 }
-
-impl AsRef<[u8; 33]> for NewU833 {
-    fn as_ref(&self) -> &[u8; 33] {
-        &self.0
-    }
-}

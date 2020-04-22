@@ -117,8 +117,8 @@ fn test_point() {
         Point::<PointInner>::one() + Point::<PointInner>::one() + Point::<PointInner>::one(),
         &point_a * &get_sim_sm2(3)
     );
-
     let point_last = point_b * (Scalar::<ScalarInner>::order() + (-get_sim_sm2(1)));
+    println!("let: {:?}", &point_last);
 
     assert_eq!(point_one.clone() + point_last.clone(), point_zero.clone());
 

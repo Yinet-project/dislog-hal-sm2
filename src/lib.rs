@@ -33,7 +33,11 @@ impl AsRef<[u8]> for NewU833 {
 
 impl Debug for NewU833 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        write!(f, "[{:?}]", &self)
+        let mut info = f.debug_list();
+        for i in 0..self.0.len() {
+            info.entry(&self.0[i]);
+        }
+        info.finish()
     }
 }
 
@@ -46,11 +50,5 @@ impl PartialEq for NewU833 {
 impl Clone for NewU833 {
     fn clone(&self) -> Self {
         Self(self.0)
-    }
-}
-
-impl AsRef<[u8; 33]> for NewU833 {
-    fn as_ref(&self) -> &[u8; 33] {
-        &self.0
     }
 }

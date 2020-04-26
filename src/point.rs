@@ -1,17 +1,17 @@
 use crate::{EccError, NewU833, ScalarInner};
 use core::fmt::Debug;
-use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
+use dislog_hal::{Bytes, Scalar};
 use lazy_static::*;
 use num_bigint::BigUint;
 
 pub struct PointInner {
-    pub(crate) data: cryptape_sm::sm2::ecc::Point,
+    pub(crate) data: libsm::sm2::ecc::Point,
 }
 
 lazy_static! {
-    static ref ECC_CTX: cryptape_sm::sm2::ecc::EccCtx = cryptape_sm::sm2::ecc::EccCtx::new();
-    static ref ECC_ZERO_DESC: NewU833 = NewU833([
+    pub static ref ECC_CTX: libsm::sm2::ecc::EccCtx = libsm::sm2::ecc::EccCtx::new();
+    pub static ref ECC_ZERO_DESC: NewU833 = NewU833([
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0,
     ]);
@@ -114,6 +114,30 @@ impl DisLogPoint for PointInner {
     fn neg(&self) -> Self {
         Self {
             data: ECC_CTX.neg(&self.data),
+        }
+    }
+
+    fn get_x(&self) -> Scalar<Self::Scalar> {
+        let (x_1, _) = ECC_CTX.to_affine(&self.data);
+        let byte = x_1.to_biguint().to_bytes_le();
+
+        let mut num = [0u8; 32];
+        num.clone_from_slice(&byte[0..byte.len()]);
+
+        Scalar {
+            inner: ScalarInner::from_bytes(num).unwrap(),
+        }
+    }
+
+    fn get_y(&self) -> Scalar<Self::Scalar> {
+        let (_, y_1) = ECC_CTX.to_affine(&self.data);
+        let byte = y_1.to_biguint().to_bytes_le();
+
+        let mut num = [0u8; 32];
+        num.clone_from_slice(&byte[0..byte.len()]);
+
+        Scalar {
+            inner: ScalarInner::from_bytes(num).unwrap(),
         }
     }
 }

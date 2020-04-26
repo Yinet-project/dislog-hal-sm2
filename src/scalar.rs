@@ -4,6 +4,7 @@ use dislog_hal::{Bytes, DisLogPoint, ScalarNumber};
 use num_bigint::BigUint;
 use num_traits::identities::One;
 use num_traits::identities::Zero;
+use rand::RngCore;
 
 pub struct ScalarInner {
     pub(crate) data: BigUint,
@@ -62,6 +63,19 @@ impl Debug for ScalarInner {
 
 impl ScalarNumber for ScalarInner {
     type Point = PointInner;
+
+    fn random<R: RngCore>(rng: &mut R) -> Self {
+        let mut input = [0u8; 32];
+        rng.fill_bytes(&mut input);
+
+        loop {
+            if let Ok(ret) = Self::from_bytes(input) {
+                if ret != Self::zero() {
+                    return ret;
+                }
+            }
+        }
+    }
 
     fn order() -> Self {
         PointInner::order()

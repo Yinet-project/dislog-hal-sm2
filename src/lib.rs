@@ -2,7 +2,7 @@ mod scalar;
 pub use scalar::ScalarInner;
 
 mod point;
-pub use point::PointInner;
+pub use point::{PointInner, ECC_CTX};
 
 use core::convert::AsRef;
 use core::fmt::Debug;

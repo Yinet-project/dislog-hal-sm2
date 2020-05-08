@@ -1,10 +1,13 @@
 use crate::{EccError, PointInner};
 use core::fmt::Debug;
 use dislog_hal::{Bytes, DisLogPoint, ScalarNumber};
+use hex::{FromHex, ToHex};
 use num_bigint::BigUint;
 use num_traits::identities::One;
 use num_traits::identities::Zero;
 use rand::RngCore;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::string::String;
 
 pub struct ScalarInner {
     pub(crate) data: BigUint,
@@ -119,5 +122,28 @@ impl ScalarNumber for ScalarInner {
             data: Self::order().data - &self.data,
         }
         .mod_order()
+    }
+}
+
+impl Serialize for ScalarInner {
+    fn serialize<SE>(&self, serializer: SE) -> Result<SE::Ok, SE::Error>
+    where
+        SE: Serializer,
+    {
+        serializer.serialize_str(&self.to_bytes().encode_hex_upper::<String>())
+    }
+}
+
+impl<'de> Deserialize<'de> for ScalarInner {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let d_str = String::deserialize(deserializer)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        let d_byte = <ScalarInner as Bytes>::BytesType::from_hex(d_str)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        ScalarInner::from_bytes(d_byte)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }

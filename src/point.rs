@@ -2,8 +2,11 @@ use crate::{EccError, NewU833, ScalarInner};
 use core::fmt::Debug;
 use dislog_hal::DisLogPoint;
 use dislog_hal::{Bytes, Scalar};
+use hex::{FromHex, ToHex};
 use lazy_static::*;
 use num_bigint::BigUint;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::string::String;
 
 pub struct PointInner {
     pub(crate) data: libsm::sm2::ecc::Point,
@@ -124,9 +127,7 @@ impl DisLogPoint for PointInner {
         let mut num = [0u8; 32];
         num.clone_from_slice(&byte[0..byte.len()]);
 
-        Scalar {
-            inner: ScalarInner::from_bytes(num).unwrap(),
-        }
+        Scalar(ScalarInner::from_bytes(num).unwrap())
     }
 
     fn get_y(&self) -> Scalar<Self::Scalar> {
@@ -136,8 +137,29 @@ impl DisLogPoint for PointInner {
         let mut num = [0u8; 32];
         num.clone_from_slice(&byte[0..byte.len()]);
 
-        Scalar {
-            inner: ScalarInner::from_bytes(num).unwrap(),
-        }
+        Scalar(ScalarInner::from_bytes(num).unwrap())
+    }
+}
+
+impl Serialize for PointInner {
+    fn serialize<SE>(&self, serializer: SE) -> Result<SE::Ok, SE::Error>
+    where
+        SE: Serializer,
+    {
+        serializer.serialize_str(&self.to_bytes().encode_hex_upper::<String>())
+    }
+}
+
+impl<'de> Deserialize<'de> for PointInner {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let d_str = String::deserialize(deserializer)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        let d_byte = <PointInner as Bytes>::BytesType::from_hex(d_str)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        PointInner::from_bytes(d_byte)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }

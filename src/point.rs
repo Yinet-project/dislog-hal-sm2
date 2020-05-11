@@ -35,11 +35,12 @@ impl Debug for PointInner {
 impl Bytes for PointInner {
     type BytesType = NewU833;
     type Error = EccError;
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
-        if *ECC_ZERO_DESC == bytes {
+    fn from_bytes(bytes: &[u8]) -> Result<Self, EccError> {
+        assert_eq!(bytes.len(), 33);
+        if ECC_ZERO_DESC.0[..] == bytes[..] {
             return Ok(Self::zero());
         }
-        match ECC_CTX.bytes_to_point(&bytes.0) {
+        match ECC_CTX.bytes_to_point(bytes) {
             Ok(x) => Ok(Self { data: x }),
             Err(_) => Err(EccError::ParseError),
         }
@@ -127,7 +128,7 @@ impl DisLogPoint for PointInner {
         let mut num = [0u8; 32];
         num.clone_from_slice(&byte[0..byte.len()]);
 
-        Scalar(ScalarInner::from_bytes(num).unwrap())
+        Scalar(ScalarInner::from_bytes(&num).unwrap())
     }
 
     fn get_y(&self) -> Scalar<Self::Scalar> {
@@ -137,7 +138,7 @@ impl DisLogPoint for PointInner {
         let mut num = [0u8; 32];
         num.clone_from_slice(&byte[0..byte.len()]);
 
-        Scalar(ScalarInner::from_bytes(num).unwrap())
+        Scalar(ScalarInner::from_bytes(&num).unwrap())
     }
 }
 
@@ -157,9 +158,9 @@ impl<'de> Deserialize<'de> for PointInner {
     {
         let d_str = String::deserialize(deserializer)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        let d_byte = <PointInner as Bytes>::BytesType::from_hex(d_str)
+        let d_byte = Vec::<u8>::from_hex(d_str)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        PointInner::from_bytes(d_byte)
+        PointInner::from_bytes(d_byte.as_slice())
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }

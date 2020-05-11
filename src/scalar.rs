@@ -26,7 +26,9 @@ impl ScalarInner {
 impl Bytes for ScalarInner {
     type BytesType = [u8; 32];
     type Error = EccError;
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
+    fn from_bytes(bytes: &[u8]) -> Result<Self, EccError> {
+        // 实际上sm2的实现支持其他长度，此处为了对外统一
+        assert!(bytes.len() == 32 || bytes.len() == 64);
         let ret = BigUint::from_bytes_le(&bytes[..]);
         Ok(Self { data: ret }.mod_order())
     }
@@ -72,7 +74,7 @@ impl ScalarNumber for ScalarInner {
         rng.fill_bytes(&mut input);
 
         loop {
-            if let Ok(ret) = Self::from_bytes(input) {
+            if let Ok(ret) = Self::from_bytes(&input) {
                 if ret != Self::zero() {
                     return ret;
                 }
@@ -141,9 +143,9 @@ impl<'de> Deserialize<'de> for ScalarInner {
     {
         let d_str = String::deserialize(deserializer)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        let d_byte = <ScalarInner as Bytes>::BytesType::from_hex(d_str)
+        let d_byte = Vec::<u8>::from_hex(d_str)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        ScalarInner::from_bytes(d_byte)
+        ScalarInner::from_bytes(d_byte.as_slice())
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }

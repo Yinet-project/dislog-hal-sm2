@@ -228,3 +228,16 @@ fn test_point_json_serial() {
 
     println!("json_str: {:?}", json_str);
 }
+
+#[test]
+fn test_fix_point_clone() {
+    let point_a = Point::<PointInner>::from_bytes(&[
+        2, 0, 48, 132, 111, 149, 100, 80, 34, 87, 192, 147, 221, 103, 158, 116, 106, 72, 195, 49,
+        84, 69, 111, 79, 193, 123, 71, 208, 170, 251, 172, 159, 166,
+    ])
+    .unwrap();
+    
+    println!("{:?} ", point_a);
+    println!("{:?} ", point_a.to_bytes());
+    println!("{:?}", point_a.get_x().to_bytes());
+}

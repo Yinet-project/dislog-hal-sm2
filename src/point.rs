@@ -126,7 +126,7 @@ impl DisLogPoint for PointInner {
         let byte = x_1.to_biguint().to_bytes_le();
 
         let mut num = [0u8; 32];
-        num.clone_from_slice(&byte[0..byte.len()]);
+        num[..byte.len()].clone_from_slice(&byte[..]);
 
         Scalar(ScalarInner::from_bytes(&num).unwrap())
     }
@@ -136,7 +136,7 @@ impl DisLogPoint for PointInner {
         let byte = y_1.to_biguint().to_bytes_le();
 
         let mut num = [0u8; 32];
-        num.clone_from_slice(&byte[0..byte.len()]);
+        num[..byte.len()].clone_from_slice(&byte[..]);
 
         Scalar(ScalarInner::from_bytes(&num).unwrap())
     }

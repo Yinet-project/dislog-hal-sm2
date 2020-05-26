@@ -8,13 +8,13 @@ edition = "2018"
 
 [dependencies]
 hex = { version = "0.4", default-features = false }
-rand = "0.7.3"
 lazy_static = "1.4.0"
-num-integer = "0.1.42"
-num-bigint = "0.1"
-num-traits = "0.2.11"
+rand = "0.7"
+num-bigint = { version = "0.1", default-features = false }
+num-traits = { version = "0.2", default-features = false }
+num-integer = { version = "0.1", default-features = false }
 dislog-hal = { git = "https://github.com/Yinet-project/dislog-hal" }
-libsm = { git = "https://github.com/citahub/libsm"}
+libsm = { git = "https://github.com/Yinet-project/libsm"}
 serde = { version = "1.0", features = ["derive"] }
 
 [dev-dependencies]

@@ -1,3 +1,7 @@
+#![no_std]
+
+extern crate alloc;
+
 mod scalar;
 pub use scalar::ScalarInner;
 

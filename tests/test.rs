@@ -236,7 +236,7 @@ fn test_fix_point_clone() {
         84, 69, 111, 79, 193, 123, 71, 208, 170, 251, 172, 159, 166,
     ])
     .unwrap();
-    
+
     println!("{:?} ", point_a);
     println!("{:?} ", point_a.to_bytes());
     println!("{:?}", point_a.get_x().to_bytes());

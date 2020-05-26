@@ -1,4 +1,6 @@
 use crate::{EccError, PointInner};
+use alloc::string::String;
+use alloc::vec::Vec;
 use core::fmt::Debug;
 use dislog_hal::{Bytes, DisLogPoint, ScalarNumber};
 use hex::{FromHex, ToHex};
@@ -7,7 +9,6 @@ use num_traits::identities::One;
 use num_traits::identities::Zero;
 use rand::RngCore;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::string::String;
 
 pub struct ScalarInner {
     pub(crate) data: BigUint,

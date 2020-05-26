@@ -1,4 +1,6 @@
 use crate::{EccError, NewU833, ScalarInner};
+use alloc::string::String;
+use alloc::vec::Vec;
 use core::fmt::Debug;
 use dislog_hal::DisLogPoint;
 use dislog_hal::{Bytes, Scalar};
@@ -6,7 +8,6 @@ use hex::{FromHex, ToHex};
 use lazy_static::*;
 use num_bigint::BigUint;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::string::String;
 
 pub struct PointInner {
     pub(crate) data: libsm::sm2::ecc::Point,

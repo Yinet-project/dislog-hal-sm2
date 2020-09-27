@@ -10,9 +10,9 @@ edition = "2018"
 hex = { version = "0.4", default-features = false }
 lazy_static = "1.4.0"
 rand = "0.7"
-num-bigint = { version = "0.1", default-features = false }
-num-traits = { version = "0.2", default-features = false }
-num-integer = { version = "0.1", default-features = false }
+num-bigint = { version = "0.2.6", default-features = false }
+num-traits = { version = "0.2.12", default-features = false }
+num-integer = { version = "0.1.43", default-features = false }
 dislog-hal = { git = "https://github.com/Yinet-project/dislog-hal" }
 libsm = { git = "https://github.com/Yinet-project/libsm"}
 serde = { version = "1.0", features = ["derive"] }
